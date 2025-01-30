@@ -1,0 +1,36 @@
+pipeline {
+    agent any  // Utilise n'importe quel agent disponible
+    tools {
+        maven 'M2_HOME'
+    }
+    options {
+        timeout(time: 30, unit: 'MINUTES')  // Augmenter le délai d'attente
+    }
+    environment {
+        APP_ENV = "DEV"
+    }
+    stages {
+        stage('Code Checkout') {
+            steps {
+                git branch: 'master',
+                    url: 'https://github.com/itsMoetaz/training_React.git'
+            }
+        }
+        stage('Code Build') {
+            steps {
+                sh 'mvn install -Dmaven.test.skip=true'
+            }
+        }
+    }
+    post {
+        always {
+            echo "======always======"
+        }
+        success {
+            echo "=====pipeline executed successfully ====="
+        }
+        failure {
+            echo "======pipeline execution failed======"
+        }
+    }
+}
